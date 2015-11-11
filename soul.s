@@ -129,7 +129,7 @@ READ_SONAR:
 
     mov r1, #0
     cmp r0, r1
-    blt erro:
+    blt erroRS:
     
     mov r1, #15
     cmp r0, r1
@@ -144,6 +144,25 @@ READ_SONAR:
     stmfd sp!, {r4-r11, lr}
     mov pc, lr
     
+SET_SPEED:
+    stmfd sp!, {r4-r1, lr}
+
+    mov r1, #0
+    cmp r0, r1
+    blt erroSS:
+    
+    mov r1, #15
+    cmp r0, r1
+    bgt erroSS:
+    
+    b fim:
+    
+    erroSS:
+    mov r0, #-1
+    
+    fim:
+    stmfd sp!, {r4-r11, lr}
+    mov pc, lr
 
 IRQ_HANDLER:
     .set GPT_SR, 0x53FA0008
