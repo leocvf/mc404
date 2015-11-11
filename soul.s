@@ -135,33 +135,40 @@ READ_SONAR:
     cmp r0, r1
     bgt erroRS:
     
-    b fim:
+    b fimRS:
     
     erroRS:
     mov r0, #-1
     
-    fim:
-    stmfd sp!, {r4-r11, lr}
+    fimRS:
+    ldmfd sp!, {r4-r11, lr}
     mov pc, lr
     
 SET_SPEED:
     stmfd sp!, {r4-r1, lr}
 
-    mov r1, #0
-    cmp r0, r1
+    mov r2, #0
+    cmp r0, r2
     blt erroSS:
     
-    mov r1, #15
-    cmp r0, r1
+    mov r2, #1
+    cmp r0, r2
     bgt erroSS:
     
-    b fim:
+    mov r1, 0b01000000
+    cmp r0, r1
+    bge erroSS2:
+
+    b fimSS:
     
     erroSS:
     mov r0, #-1
-    
-    fim:
-    stmfd sp!, {r4-r11, lr}
+
+    erroSS2:
+    mov r0, #-2
+
+    fimSS:
+    ldmfd sp!, {r4-r11, lr}
     mov pc, lr
 
 IRQ_HANDLER:
