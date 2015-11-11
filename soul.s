@@ -94,6 +94,10 @@ laco:
     b laco
     
 SVC_HANDLER:
+    .set DR 0x53F84000
+    .set GDIR 0x53F84004
+    .set PSR 0x53F84008
+
     mov r0, #16
     cmp r0, r7
     bleq READ_SONAR:
@@ -129,13 +133,13 @@ READ_SONAR:
 
     mov r1, #0
     cmp r0, r1
-    blt erroRS:
+    blt erroRS
     
     mov r1, #15
     cmp r0, r1
-    bgt erroRS:
+    bgt erroRS
     
-    b fimRS:
+    b fimRS
     
     erroRS:
     mov r0, #-1
@@ -149,25 +153,37 @@ SET_SPEED:
 
     mov r2, #0
     cmp r0, r2
-    blt erroSS:
+    blt erroSS
     
     mov r2, #1
     cmp r0, r2
-    bgt erroSS:
+    bgt erroSS
     
-    mov r1, 0b01000000
-    cmp r0, r1
-    bge erroSS2:
+    mov r2, 0b01000000
+    cmp r1, r2
+    bge erroSS2
 
-    b fimSS:
+
+    mov r4, =GDIR
+    mov r2, #1
+    cmp r0, r2
+    blt mot1SS
+    bic r4, r4, 0x00000000
+    str r1, [r4]
+    b fimSS
+mot1SS:
+    bic r4, r4, 0b
+    str r1, [r4]
     
-    erroSS:
+    b fimSS
+    
+erroSS:
     mov r0, #-1
 
-    erroSS2:
+erroSS2:
     mov r0, #-2
 
-    fimSS:
+fimSS:
     ldmfd sp!, {r4-r11, lr}
     mov pc, lr
 
