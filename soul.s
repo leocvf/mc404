@@ -96,31 +96,54 @@ laco:
 SVC_HANDLER:
     mov r0, #16
     cmp r0, r7
-    beq READ_SONAR:
+    bleq READ_SONAR:
     
     mov r0, #17
     cmp r0, r7
-    beq REG_PRX_CALL:
+    bleq REG_PRX_CALL:
     
     mov r0, #18
     cmp r0, r7
-    beq SET_SPEED:
+    bleq SET_SPEED:
     
     mov r0, #19
     cmp r0, r7
-    beq SET_SPEEDS:
+    bleq SET_SPEEDS:
     
     mov r0, #20
     cmp r0, r7
-    beq GET_TIME:
+    bleq GET_TIME:
     
     mov r0, #21
     cmp r0, r7
-    beq SET_TIME:
+    bleq SET_TIME:
     
     mov r0, #22
     cmp r0, r7
-    beq SET_ALARM:
+    bleq SET_ALARM:
+    
+    b laco:
+    
+READ_SONAR:
+    stmfd sp!, {r4-r1, lr}
+
+    mov r1, #0
+    cmp r0, r1
+    blt erro:
+    
+    mov r1, #15
+    cmp r0, r1
+    bgt erroRS:
+    
+    b fim:
+    
+    erroRS:
+    mov r0, #-1
+    
+    fim:
+    stmfd sp!, {r4-r11, lr}
+    mov pc, lr
+    
 
 IRQ_HANDLER:
     .set GPT_SR, 0x53FA0008
