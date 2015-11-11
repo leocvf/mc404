@@ -94,7 +94,7 @@ laco:
     b laco
     
 SVC_HANDLER:
-    spmf
+    newpuff
 
 IRQ_HANDLER:
     .set GPT_SR, 0x53FA0008
