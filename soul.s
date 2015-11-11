@@ -94,7 +94,33 @@ laco:
     b laco
     
 SVC_HANDLER:
-    newpuff
+    mov r0, #16
+    cmp r0, r7
+    beq READ_SONAR:
+    
+    mov r0, #17
+    cmp r0, r7
+    beq REG_PRX_CALL:
+    
+    mov r0, #18
+    cmp r0, r7
+    beq SET_SPEED:
+    
+    mov r0, #19
+    cmp r0, r7
+    beq SET_SPEEDS:
+    
+    mov r0, #20
+    cmp r0, r7
+    beq GET_TIME:
+    
+    mov r0, #21
+    cmp r0, r7
+    beq SET_TIME:
+    
+    mov r0, #22
+    cmp r0, r7
+    beq SET_ALARM:
 
 IRQ_HANDLER:
     .set GPT_SR, 0x53FA0008
