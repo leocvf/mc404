@@ -94,42 +94,40 @@ laco:
     b laco
     
 SVC_HANDLER:
-    .set DR 0x53F84000
-    .set GDIR 0x53F84004
-    .set PSR 0x53F84008
+    .set GDI, 0x53F84000
 
     mov r0, #16
     cmp r0, r7
-    bleq READ_SONAR:
+    bleq READ_SONAR
     
-    mov r0, #17
-    cmp r0, r7
-    bleq REG_PRX_CALL:
+    @mov r0, #17
+    @cmp r0, r7
+    @bleq REG_PRX_CALL
     
     mov r0, #18
     cmp r0, r7
-    bleq SET_SPEED:
+    bleq SET_SPEED
     
-    mov r0, #19
-    cmp r0, r7
-    bleq SET_SPEEDS:
+    @mov r0, #19
+    @cmp r0, r7
+    @bleq SET_SPEEDS
     
-    mov r0, #20
-    cmp r0, r7
-    bleq GET_TIME:
+    @mov r0, #20
+    @cmp r0, r7
+    @bleq GET_TIME
     
-    mov r0, #21
-    cmp r0, r7
-    bleq SET_TIME:
+    @mov r0, #21
+    @cmp r0, r7
+    @bleq SET_TIME
     
-    mov r0, #22
-    cmp r0, r7
-    bleq SET_ALARM:
+    @mov r0, #22
+    @cmp r0, r7
+    @bleq SET_ALARM
     
-    b laco:
+    b laco
     
 READ_SONAR:
-    stmfd sp!, {r4-r1, lr}
+    stmfd sp!, {r4-r11, lr}
 
     mov r1, #0
     cmp r0, r1
@@ -149,7 +147,7 @@ READ_SONAR:
     mov pc, lr
     
 SET_SPEED:
-    stmfd sp!, {r4-r1, lr}
+    stmfd sp!, {r4-r11, lr}
 
     mov r2, #0
     cmp r0, r2
@@ -159,22 +157,26 @@ SET_SPEED:
     cmp r0, r2
     bgt erroSS
     
-    mov r2, 0b01000000
+    mov r2, #0b01000000
     cmp r1, r2
     bge erroSS2
 
 
-    mov r4, =GDIR
+    ldr r4, =GDI
     mov r2, #1
+    ldr r3, [r4]
     cmp r0, r2
     blt mot1SS
-    bic r4, r4, 0x00000000
-    str r1, [r4]
+    bic r4, r4, #0b00000001111111000000000000000000
+    lsr r1,r1, #18
+    add r3, r3, r1
+    str r3, [r4]
     b fimSS
-mot1SS:
-    bic r4, r4, 0b
-    str r1, [r4]
     
+mot1SS:
+    bic r4, r4, #0b11111110000000000000000000000000
+    lsr r1, r1, #25
+    add r3, r3, r1
     b fimSS
     
 erroSS:
