@@ -15,7 +15,7 @@ interrupt_vector:
 
 .text
 
-    msr  CPSR_c, #0x13
+    @msr  CPSR_c, #0x13
     @ Zera o contador
     ldr r2, =CONTADOR
     mov r0,#0
@@ -89,12 +89,14 @@ SET_TZIC:
     str r0, [r1, #TZIC_INTCTRL]
 
     @instrucao msr - habilita interrupcoes
-    @msr  CPSR_c, #0x13       @ SUPERVISOR mode, IRQ/FIQ enabled
+    msr  CPSR_c, #0x13       @ SUPERVISOR mode, IRQ/FIQ enabled
     
     @--Change to User mode, enable interrupts  and Jump to user code
-    msr CPSR_c, #0x10
-    mov pc, #0x2000
-
+    @msr CPSR_c, #0x10
+    @mov pc, #0x2000
+    
+laco:
+    b laco
 
 SVC_HANDLER:
     .set GDI, 0x53F84000
@@ -127,7 +129,7 @@ SVC_HANDLER:
     @cmp r0, r7
     @bleq SET_ALARM
     
-    b laco
+    movs pc, lr
     
 READ_SONAR:
     stmfd sp!, {r4-r11, lr}
@@ -206,8 +208,7 @@ IRQ_HANDLER:
     
     movs pc, lr
 
-laco:
-    b laco
+
     
 .data
     CONTADOR:
