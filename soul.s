@@ -7,6 +7,7 @@ interrupt_vector:
 
     b RESET_HANDLER
 .org 0x8
+teste:
     b SVC_HANDLER
 .org 0x18
     b IRQ_HANDLER
@@ -15,7 +16,6 @@ interrupt_vector:
 
 .text
 
-    @msr  CPSR_c, #0x13
     @ Zera o contador
     ldr r2, =CONTADOR
     mov r0,#0
@@ -91,44 +91,45 @@ SET_TZIC:
     @instrucao msr - habilita interrupcoes
     msr  CPSR_c, #0x13       @ SUPERVISOR mode, IRQ/FIQ enabled
     
-    @--Change to User mode, enable interrupts  and Jump to user code
-    @msr CPSR_c, #0x10
-    @mov pc, #0x2000
-    
 laco:
+    mov r0, #1
+    mov r1, #0b110011
+    mov r7, #18
+    b teste
     b laco
 
 SVC_HANDLER:
     .set GDI, 0x53F84000
     msr CPSR_c, #0x13
-    mov r0, #16
-    cmp r0, r7
+    mov r9, #16
+    cmp r9, r7
     bleq READ_SONAR
     
-    @mov r0, #17
-    @cmp r0, r7
+    @mov r9, #17
+    @cmp r9, r7
     @bleq REG_PRX_CALL
     
-    mov r0, #18
-    cmp r0, r7
+    mov r9, #18
+    cmp r9, r7
     bleq SET_SPEED
     
-    @mov r0, #19
-    @cmp r0, r7
+    @mov r9, #19
+    @cmp r9, r7
     @bleq SET_SPEEDS
     
-    @mov r0, #20
-    @cmp r0, r7
+    @mov r9, #20
+    @cmp r9, r7
     @bleq GET_TIME
     
-    @mov r0, #21
-    @cmp r0, r7
+    @mov r9, #21
+    @cmp r9, r7
     @bleq SET_TIME
     
-    @mov r0, #22
-    @cmp r0, r7
+    @mov r9, #22
+    @cmp r9, r7
     @bleq SET_ALARM
     
+    sub pc, pc, #4
     movs pc, lr
     
 READ_SONAR:
@@ -149,6 +150,7 @@ READ_SONAR:
     
     fimRS:
     ldmfd sp!, {r4-r11, lr}
+    sub pc, pc, #4
     movs pc, lr
     
 SET_SPEED:
@@ -172,26 +174,28 @@ SET_SPEED:
     ldr r3, [r4]
     cmp r0, r2
     blt mot1SS
-    bic r4, r4, #0b00000001111111000000000000000000
-    lsr r1,r1, #18
+    bic r3, r3, #0b00000001111111000000000000000000
+    lsr r1, r1, #17
     add r3, r3, r1
     str r3, [r4]
     b fimSS
     
 mot1SS:
-    bic r4, r4, #0b11111110000000000000000000000000
-    lsr r1, r1, #25
+    bic r3, r3, #0b11111110000000000000000000000000
+    lsr r1, r1, #24
     add r3, r3, r1
     b fimSS
     
 erroSS:
     mov r0, #-1
+    b fimSS
 
 erroSS2:
     mov r0, #-2
 
 fimSS:
     ldmfd sp!, {r4-r11, lr}
+    sub pc, pc, #4
     movs pc, lr
 
 IRQ_HANDLER:
@@ -206,9 +210,8 @@ IRQ_HANDLER:
     add r0, r0, #1
     str r0, [r1]
     
+    sub pc, pc, #4
     movs pc, lr
-
-
     
 .data
     CONTADOR:
