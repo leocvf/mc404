@@ -144,7 +144,7 @@ READ_SONAR:
     
     fimRS:
     ldmfd sp!, {r4-r11, lr}
-    mov pc, lr
+    movs pc, lr
     
 SET_SPEED:
     stmfd sp!, {r4-r11, lr}
@@ -187,7 +187,7 @@ erroSS2:
 
 fimSS:
     ldmfd sp!, {r4-r11, lr}
-    mov pc, lr
+    movs pc, lr
 
 IRQ_HANDLER:
     .set GPT_SR, 0x53FA0008
