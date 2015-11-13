@@ -15,7 +15,7 @@ teste:
 .org 0x100
 
 .text
-
+    msr CPSR_c, #0x13
     @ Zera o contador
     ldr r2, =CONTADOR
     mov r0,#0
@@ -89,7 +89,7 @@ SET_TZIC:
     str r0, [r1, #TZIC_INTCTRL]
 
     @instrucao msr - habilita interrupcoes
-    msr  CPSR_c, #0x13       @ SUPERVISOR mode, IRQ/FIQ enabled
+    msr  CPSR_c, #0x10       @ SUPERVISOR mode, IRQ/FIQ enabled
     
 laco:
     mov r0, #1
@@ -175,14 +175,14 @@ SET_SPEED:
     cmp r0, r2
     blt mot1SS
     bic r3, r3, #0b00000001111111000000000000000000
-    lsr r1, r1, #17
+    lsl r1, r1, #18
     add r3, r3, r1
     str r3, [r4]
     b fimSS
     
 mot1SS:
     bic r3, r3, #0b11111110000000000000000000000000
-    lsr r1, r1, #24
+    lsl r1, r1, #25
     add r3, r3, r1
     b fimSS
     
