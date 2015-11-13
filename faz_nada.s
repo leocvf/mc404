@@ -1,6 +1,7 @@
-.text 
-    and r0,r0,r0
-mov r0, #1
-mov r1, #0b110011
-mov r7, #19
-svc 
+.text
+.org 8000
+    mov r0, #1
+    mov r1, #0b110011
+    mov r7, #18
+    svc 0x0
+
